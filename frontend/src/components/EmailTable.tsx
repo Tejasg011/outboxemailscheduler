@@ -1,0 +1,6 @@
+import type { EmailJob } from '../types';
+
+export function EmailTable({ emails, scheduled, onCancel }: { emails: EmailJob[]; scheduled?: boolean; onCancel?: (id: string) => void }) {
+  if (!emails.length) return <div className="p-10 text-center text-slate-500">No emails to show.</div>;
+  return <div className="overflow-x-auto"><table className="w-full text-sm"><thead className="bg-slate-50 text-slate-500"><tr><th className="text-left p-3">Email</th><th className="text-left p-3">Subject</th><th className="text-left p-3">{scheduled ? 'Scheduled time' : 'Sent time'}</th><th className="text-left p-3">Status</th>{scheduled && <th className="p-3"/>}</tr></thead><tbody>{emails.map((email) => <tr key={email.id} className="border-t border-slate-100"><td className="p-3">{email.recipient}</td><td className="p-3 max-w-xs truncate">{email.subject}</td><td className="p-3">{new Date(scheduled ? email.scheduled_at : (email.sent_at ?? email.scheduled_at)).toLocaleString()}</td><td className="p-3"><span className="capitalize">{email.status}</span>{email.error_message && <div className="text-xs text-red-600 mt-1">{email.error_message}</div>}</td>{scheduled && <td className="p-3 text-right">{email.status === 'scheduled' && <button onClick={() => onCancel?.(email.id)} className="text-red-600 hover:underline">Cancel</button>}</td>}</tr>)}</tbody></table></div>;
+}
